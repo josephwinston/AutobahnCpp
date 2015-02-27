@@ -1,6 +1,6 @@
-_gen
 _build
-_doxygen
-_upload*
-*.pyc
-*.bak
+_upload
+_test
+_spelling
+_static/img/gen
+.sconsign.dblite

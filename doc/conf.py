@@ -14,6 +14,7 @@
 
 import sys
 import os
+import sphinx_bootstrap_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -29,12 +30,17 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.viewcode',
-#    'breathe'
+   'sphinx.ext.autodoc',
+   'sphinx.ext.doctest',
+   'sphinx.ext.intersphinx',
+   'sphinx.ext.viewcode',
+   'sphinx.ext.ifconfig',
+   'sphinxcontrib.spelling'
 ]
+
+spelling_lang = 'en_US'
+spelling_show_suggestions = False
+spelling_word_list_filename = 'spelling_wordlist.txt'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -50,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'AutobahnCpp'
-copyright = u'2014 <a href="http://tavendo.com">Tavendo GmbH</a>, <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons CC-BY-SA</a><br>Tavendo, WAMP and "Autobahn WebSocket" are trademarks of <a href="http://tavendo.com">Tavendo GmbH</a>'
+copyright = None
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -72,7 +78,7 @@ release = '0.1.0'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', 'work']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -90,8 +96,8 @@ exclude_patterns = ['_build']
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-#pygments_style = 'sphinx'
-pygments_style = 'flask_theme_support.FlaskyStyle'
+pygments_style = 'sphinx'
+# pygments_style = 'flask_theme_support.FlaskyStyle'
 # pygments_style = 'pastie'
 # pygments_style = 'monokai'
 # pygments_style = 'colorful'
@@ -110,9 +116,89 @@ pygments_style = 'flask_theme_support.FlaskyStyle'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #html_theme = 'default'
-sys.path.append(os.path.abspath('_themes'))
-html_theme_path = ['_themes']
-html_theme = 'kr'
+# sys.path.append(os.path.abspath('_themes'))
+html_theme = 'bootstrap'
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+
+## Sphinx-Bootstrap Theme
+##
+## http://sphinx-bootstrap-theme.readthedocs.org/en/latest/README.html
+##
+if sphinx_bootstrap_theme:
+
+   html_theme = 'bootstrap'
+   html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+   # (Optional) Logo. Should be small enough to fit the navbar (ideally 24x24).
+   # Path should be relative to the ``_static`` files directory.
+
+   html_theme_options = {
+       # Navigation bar title. (Default: ``project`` value)
+       'navbar_title': " ",
+
+       # Tab name for entire site. (Default: "Site")
+       'navbar_site_name': "Site",
+
+       # A list of tuples containing pages or urls to link to.
+       # Valid tuples should be in the following forms:
+       #    (name, page)                 # a link to a page
+       #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
+       #    (name, "http://example.com", True) # arbitrary absolute url
+       # Note the "1" or "True" value above as the third argument to indicate
+       # an arbitrary url.
+       'navbar_links': [
+           #("Examples", "examples"),
+           #("Link", "http://example.com", True),
+       ],
+
+       # Render the next and previous page links in navbar. (Default: true)
+       'navbar_sidebarrel': True,
+
+       # Render the current pages TOC in the navbar. (Default: true)
+       'navbar_pagenav': True,
+
+       # Tab name for the current pages TOC. (Default: "Page")
+       #'navbar_pagenav_name': "Page",
+
+       # Global TOC depth for "site" navbar tab. (Default: 1)
+       # Switching to -1 shows all levels.
+       'globaltoc_depth': 1,
+
+       # Include hidden TOCs in Site navbar?
+       #
+       # Note: If this is "false", you cannot have mixed ``:hidden:`` and
+       # non-hidden ``toctree`` directives in the same page, or else the build
+       # will break.
+       #
+       # Values: "true" (default) or "false"
+       'globaltoc_includehidden': "true",
+
+       # HTML navbar class (Default: "navbar") to attach to <div> element.
+       # For black navbar, do "navbar navbar-inverse"
+       #'navbar_class': "navbar navbar-inverse",
+       'navbar_class': "navbar",
+
+       # Fix navigation bar to top of page?
+       # Values: "true" (default) or "false"
+       'navbar_fixed_top': "true",
+
+       # Location of link to source.
+       # Options are "nav" (default), "footer" or anything else to exclude.
+       'source_link_position': "nav",
+
+       # Bootswatch (http://bootswatch.com/) theme.
+       #
+       # Options are nothing with "" (default) or the name of a valid theme
+       # such as "amelia" or "cosmo".
+       'bootswatch_theme': "",
+
+       # Choose Bootstrap version.
+       # Values: "3" (default) or "2" (in quotes)
+       'bootstrap_version': "3",
+   }
+
+# if sphinx_rtd_theme:
+#    html_theme = "sphinx_rtd_theme"
+#    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -144,6 +230,13 @@ html_theme = 'kr'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+## additional variables which become accessible in RST (e.g. .. ifconfig:: not no_network)
+##
+def setup(app):
+   app.add_config_value('no_network', False, True)
+
+no_network = None
+
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
@@ -152,7 +245,18 @@ html_static_path = ['_static']
 # additional variables which become accessible in the template engine's context for
 # all pages
 # html_context = {'widgeturl': 'http://192.168.1.147:8090/widget'}
-html_context = {'widgeturl': 'https://demo.crossbar.io/clandeckwidget'}
+html_context = {
+   #'widgeturl': 'https://demo.crossbar.io/clandeckwidget'
+   #'widgeturl': 'http://127.0.0.1:8090/widget'
+   'widgeturl': None,
+   'no_network': False,
+   #'cstatic': 'http://127.0.0.1:8888',
+   'cstatic': '//tavendo-common-static.s3-eu-west-1.amazonaws.com',
+}
+
+# (Optional) Logo. Should be small enough to fit the navbar (ideally 24x24).
+# Path should be relative to the ``_static`` files directory.
+html_logo = None
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -166,9 +270,7 @@ html_context = {'widgeturl': 'https://demo.crossbar.io/clandeckwidget'}
 #html_sidebars = {}
 
 html_sidebars = {
-    # 'index':    ['side-primary.html', 'searchbox.html'],
-    '**':       ['side-secondary.html', 'stay_informed.html', 'sidetoc.html',
-                 'previous_next.html', 'searchbox.html' ]
+   '**':       ['side-primary.html']
 }
 
 # Additional templates that should be rendered to pages, maps page names to
@@ -202,7 +304,7 @@ html_sidebars = {
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AutobahnCppdoc'
+htmlhelp_basename = 'AutobahnCpp'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -296,12 +398,28 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 
 
 rst_epilog = """
-.. |ab| replace:: **Autobahn**\|Cpp
+.. |ab| replace:: Autobahn\|Cpp
+.. |Ab| replace:: **Autobahn**\|Cpp
+.. _Autobahn: http://autobahn.ws
+.. _AutobahnPython: **Autobahn**\|Python
+.. _AutobahnJS: **Autobahn**\|JS
+.. _WebSocket: http://tools.ietf.org/html/rfc6455
+.. _RFC6455: http://tools.ietf.org/html/rfc6455
+.. _WAMP: http://wamp.ws/
+.. _WAMPv1: http://wamp.ws/spec/wamp1/
+.. _WAMPv2: https://github.com/tavendo/WAMP/blob/master/spec/README.md
+.. _AutobahnTestsuite: http://autobahn.ws/testsuite
 """
 
-rst_prolog = """
-.. container:: topnav
+# rst_prolog = """
+# .. container:: topnav
 
-   :doc:`Overview </index>` :doc:`Getting Started </gettingstarted>`  :doc:`/examples` :doc:`API Reference <reference>` :doc:`table_of_contents`
+#    :doc:`Overview </index>` :doc:`Getting Started </gettingstarted>`  :doc:`/examples` :doc:`API Reference <reference>` :doc:`table_of_contents`
 
-"""
+# """
+
+
+# http://stackoverflow.com/questions/5599254/how-to-use-sphinxs-autodoc-to-document-a-classs-init-self-method
+autoclass_content = 'both'
+
+autodoc_member_order = 'bysource'
